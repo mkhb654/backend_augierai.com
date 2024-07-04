@@ -16,11 +16,13 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+# Initialize the FastAPI app
 app = FastAPI()
 
 # Print the SAM API key for debugging
 print("SAM_API_KEY:", os.getenv("SAM_API_KEY"))
 
+# Function to fetch SAM opportunities
 def fetch_sam_opportunities(limit=5):
     url = "https://api.sam.gov/prod/opportunities/v2/search"
     params = {
@@ -36,6 +38,7 @@ def fetch_sam_opportunities(limit=5):
         print(f"Error: {response.status_code} - {response.text}")
         return {"error": response.json()}
 
+# Endpoint to get SAM opportunities
 @app.get("/sam_opportunities")
 def get_sam_opportunities(limit: int = 5):
     return fetch_sam_opportunities(limit)
@@ -54,6 +57,7 @@ class AgentState(TypedDict):
 # Initialize the OpenAI model
 model = ChatOpenAI(api_key=os.getenv("OPENAI_API_KEY"), model="gpt-4.0")
 
+# Define the nodes for the state graph
 def plan_node(state: AgentState):
     messages = [
         SystemMessage(content="Please provide a plan for the following task."),
@@ -128,6 +132,7 @@ builder.add_edge("research_critique", "generate")
 
 graph = builder.compile()
 
+# Endpoint to run the state graph
 @app.post("/run_graph")
 def run_graph(task: str, max_revisions: int = 3):
     initial_state = AgentState(
