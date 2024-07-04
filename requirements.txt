@@ -1,0 +1,17 @@
+openai
+langchain
+matplotlib
+networkx
+pydot
+graphviz
+python-docx
+langchain_openai
+langsmith
+pandas
+langchain_experimental
+langgraph
+langchain_core
+requests
+fastapi
+uvicorn
+python-dotenv
